@@ -8,6 +8,8 @@ To create a mapping-
 -create a controller- add annotations @Getmapping @controller
 -create a method return String to the file spring should look for.
 -to jsut return a value you can add 
+
+This is a GETMAPPING
    @GetMapping("/login")
     @ResponseBody
     public String sayHello() {
