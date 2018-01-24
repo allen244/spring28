@@ -1,5 +1,9 @@
 package com.avs.springboot.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class Todo {
@@ -37,6 +41,9 @@ public class Todo {
         this.user = user;
     }
 
+    @NotNull
+    @NotEmpty
+    @Size(min = 3, message = "enter at least 3")
     public String getDesc() {
         return desc;
     }

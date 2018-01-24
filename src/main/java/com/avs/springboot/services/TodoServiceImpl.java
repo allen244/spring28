@@ -49,4 +49,21 @@ public class TodoServiceImpl implements TodoService {
             }
         }
     }
+
+    @Override
+    public Todo retrieveTodosById(Integer id) {
+        Iterator<Todo> iterator = todos.iterator();
+        while (iterator.hasNext()) {
+            Todo todo = iterator.next();
+            if (todo.getId() == id) {
+               return todo;
+            }
+        }
+        return null;
+    }
+
+    public void updateTodo(Todo todo){
+        todos.remove(todo);
+        todos.add(todo);
+    }
 }

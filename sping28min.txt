@@ -56,7 +56,17 @@ Session objects- need to add annotations across controllers
 JSTL- Add jar dependency and inculde the core c lib at the top of the jsp pages
 https://www.journaldev.com/2090/jstl-tutorial-jstl-tags-example
 
+Spring form validation
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
 Webjars- it puts the js and css in a jar file instead of placing it in a folder
 
-Command Bean/Object
+Command Bean/Object-
+need to add this for jsp <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
+Validation- add annotations to the domain object or command object
+-can use bindingResult or add @valid annontation
+BindingResult bindingResult
+if (bindingResult.hasErrors()) {
+
 
