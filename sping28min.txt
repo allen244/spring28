@@ -1,0 +1,43 @@
+Spring 28min
+
+spring mvc
+-create project in spring io
+-add maven project with all the dependencies
+
+To create a mapping-
+-create a controller- add annotations @Getmapping @controller
+-create a method return String to the file spring should look for.
+-to jsut return a value you can add 
+   @GetMapping("/login")
+    @ResponseBody
+    public String sayHello() {
+        return "Hello World dummy";
+    }
+	
+ViewResolver- tells spring boot what view to use.
+-thymeleaf- need to add the jars and the schema in html
+-jsp need to set the path webapp/web-inf/jsp
+
+you can either add a bean pointing the view or application.props
+spring.mvc.view.prefix: /WEB-INF/jsp/
+spring.mvc.view.suffix: .jsp
+
+Map request paramter-?name=test --   @RequestParam String name 
+    @GetMapping("/login")
+    public String loginMessage(Model model, @RequestParam String name ){
+
+        System.out.println(name);
+        return "login";
+    }
+	
+add model to the view -  model.addAttribute("name", name);
+
+DispatcherServlet-
+DispatcherServlet receives HTTP Request.
+DispatcherServlet identifies the right Controller based on the URL.
+Controller executes Business Logic.
+Controller returns a) Model b) View Name Back to DispatcherServlet.
+DispatcherServlet identifies the correct view (ViewResolver).
+DispatcherServlet makes the model available to view and executes it.
+DispatcherServlet returns HTTP Response Back.
+Flow : http://docs.spring.io/spring-framework/docs/2.0.8/reference/images/mvc.png
