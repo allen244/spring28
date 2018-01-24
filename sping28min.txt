@@ -24,6 +24,8 @@ you can either add a bean pointing the view or application.props
 spring.mvc.view.prefix: /WEB-INF/jsp/
 spring.mvc.view.suffix: .jsp
 
+
+@PathVariable-  @RequestMapping("/{id}/delete-todo")
 Map request paramter-?name=test --   @RequestParam String name 
     @GetMapping("/login")
     public String loginMessage(Model model, @RequestParam String name ){
@@ -43,3 +45,18 @@ DispatcherServlet identifies the correct view (ViewResolver).
 DispatcherServlet makes the model available to view and executes it.
 DispatcherServlet returns HTTP Response Back.
 Flow : http://docs.spring.io/spring-framework/docs/2.0.8/reference/images/mvc.png
+
+
+FrontController Architexture
+-browser to frontcontroller to controller1 or controller 2 to model to view
+
+Session objects- need to add annotations across controllers
+@SessionAttributes("name")
+
+JSTL- Add jar dependency and inculde the core c lib at the top of the jsp pages
+https://www.journaldev.com/2090/jstl-tutorial-jstl-tags-example
+
+Webjars- it puts the js and css in a jar file instead of placing it in a folder
+
+Command Bean/Object
+
