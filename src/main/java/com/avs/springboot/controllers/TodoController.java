@@ -5,6 +5,8 @@ import com.avs.springboot.services.TodoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -33,7 +35,7 @@ public class TodoController {
 
     @GetMapping("/list-todos")
     public String showTodos(ModelMap model) {
-        String name = (String) model.get("name");
+        String name = getLoggedInUserName();
         model.put("todos", todoService.retrieveTodos(name));
         return "list-todos";
 
@@ -41,16 +43,25 @@ public class TodoController {
 
     @RequestMapping("/add-todos")
     public String showTodoPage(ModelMap model) {
-        model.addAttribute("todo", new Todo(0, (String) model.get("name"), "Default Desc",
+        model.addAttribute("todo", new Todo(0, getLoggedInUserName(), "Default Desc",
                 new Date(), false));
         return "add-todos";
     }
 
     @GetMapping("/{id}/delete-todo")
     public String deleteTodo(ModelMap modelMap, @PathVariable String id) {
-        String name = (String) modelMap.get("name");
+        String name = getLoggedInUserName();
         todoService.deleteTodo(Integer.valueOf(id));
         return "redirect:/list-todos";
+    }
+
+    private String getLoggedInUserName() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return principal.toString();
     }
 
     @GetMapping("/{id}/update-todo")
@@ -65,7 +76,7 @@ public class TodoController {
     @PostMapping("/{id}/update-todo")
     public String updateTodo(ModelMap modelMap, @Valid Todo todo, BindingResult bindingResult) {
 
-        todo.setUser((String) modelMap.get("name"));
+        todo.setUser(getLoggedInUserName());
         if (bindingResult.hasErrors()) {
 
             bindingResult.getAllErrors().forEach(objectError -> {
@@ -90,7 +101,7 @@ public class TodoController {
 
             return "/add-todos";
         }
-        String name = (String) model.get("name");
+        String name = getLoggedInUserName();
         todoService.addTodo(name, todo.getDesc(), todo.getTargetDate(), false);
         return "redirect:list-todos";
     }

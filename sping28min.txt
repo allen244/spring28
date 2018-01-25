@@ -69,4 +69,50 @@ Validation- add annotations to the domain object or command object
 BindingResult bindingResult
 if (bindingResult.hasErrors()) {
 
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(
+				dateFormat, false));
+	}
+
+Spring security
+    @Autowired
+    public void configureGlobalSecurity(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.inMemoryAuthentication().withUser("test").password("test")
+                .roles("USER", "ADMIN");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/login").permitAll()
+                .antMatchers("/", "/*todo*/**").access("hasRole('USER')").and()
+                .formLogin();
+    }
+	
+	get user
+	    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+		
+		logout
+		    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+
+        Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response,
+                    authentication);
+        }
+
+        return "redirect:/";
+    }
+	
+Exception Handling
 
