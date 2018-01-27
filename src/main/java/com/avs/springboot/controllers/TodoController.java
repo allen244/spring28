@@ -1,7 +1,9 @@
 package com.avs.springboot.controllers;
 
 import com.avs.springboot.model.Todo;
+import com.avs.springboot.repositories.TodoRepository;
 import com.avs.springboot.services.TodoService;
+import com.avs.springboot.services.TodoServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -22,6 +24,14 @@ import java.util.Date;
 @Slf4j
 public class TodoController {
 
+    @Autowired
+    private TodoRepository todoRepository;
+
+
+    public void setTodoRepository(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
+
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -36,7 +46,7 @@ public class TodoController {
     @GetMapping("/list-todos")
     public String showTodos(ModelMap model) {
         String name = getLoggedInUserName();
-        model.put("todos", todoService.retrieveTodos(name));
+        model.put("todos", todoRepository.findByUser(name));
         return "list-todos";
 
     }
@@ -51,7 +61,7 @@ public class TodoController {
     @GetMapping("/{id}/delete-todo")
     public String deleteTodo(ModelMap modelMap, @PathVariable String id) {
         String name = getLoggedInUserName();
-        todoService.deleteTodo(Integer.valueOf(id));
+        todoRepository.delete(Integer.valueOf(id));
         return "redirect:/list-todos";
     }
 
@@ -67,8 +77,8 @@ public class TodoController {
     @GetMapping("/{id}/update-todo")
     public String showUpdateTodo(ModelMap modelMap, @PathVariable String id) {
 
-        Todo todo = todoService.retrieveTodosById(Integer.valueOf(id));
-
+        //Todo todo = todoService.retrieveTodosById(Integer.valueOf(id));
+        Todo todo = todoRepository.findOne(Integer.valueOf(id));
         modelMap.put("todo", todo);
         return "/add-todos";
     }
@@ -86,7 +96,8 @@ public class TodoController {
             return "/add-todos";
         }
 
-        todoService.updateTodo(todo);
+        todoRepository.save(todo);
+        //todoService.updateTodo(todo);
         return "redirect:/list-todos";
     }
 
@@ -102,7 +113,10 @@ public class TodoController {
             return "/add-todos";
         }
         String name = getLoggedInUserName();
-        todoService.addTodo(name, todo.getDesc(), todo.getTargetDate(), false);
+
+        todo.setUser(getLoggedInUserName());
+        todoRepository.save(todo);
+        // todoService.addTodo(name, todo.getDesc(), todo.getTargetDate(), false);
         return "redirect:list-todos";
     }
 }

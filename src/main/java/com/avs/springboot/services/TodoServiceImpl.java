@@ -1,6 +1,8 @@
 package com.avs.springboot.services;
 
 import com.avs.springboot.model.Todo;
+import com.avs.springboot.repositories.TodoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +15,17 @@ public class TodoServiceImpl implements TodoService {
 
     private static List<Todo> todos = new ArrayList<Todo>();
     private static int todoCount = 3;
+
+    @Autowired
+    private TodoRepository todoRepository;
+
+    public static void setTodoCount(int todoCount) {
+        TodoServiceImpl.todoCount = todoCount;
+    }
+
+    public void setTodoRepository(TodoRepository todoRepository) {
+        this.todoRepository = todoRepository;
+    }
 
     static {
         todos.add(new Todo(1, "test", "Learn Spring MVC", new Date(),
@@ -41,13 +54,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public void deleteTodo(int id) {
-        Iterator<Todo> iterator = todos.iterator();
-        while (iterator.hasNext()) {
-            Todo todo = iterator.next();
-            if (todo.getId() == id) {
-                iterator.remove();
-            }
-        }
+        todoRepository.delete(id);
     }
 
     @Override
@@ -56,13 +63,13 @@ public class TodoServiceImpl implements TodoService {
         while (iterator.hasNext()) {
             Todo todo = iterator.next();
             if (todo.getId() == id) {
-               return todo;
+                return todo;
             }
         }
         return null;
     }
 
-    public void updateTodo(Todo todo){
+    public void updateTodo(Todo todo) {
         todos.remove(todo);
         todos.add(todo);
     }
